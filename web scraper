@@ -1,0 +1,24 @@
+def scrape_news():
+    url = "https://www.bbc.com/news"  # Example news website
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, "html.parser")
+        
+        # Find all headlines (modify based on the website's HTML structure)
+        headlines = soup.find_all('h3', class_='gs-c-promo-heading__title')
+        
+        news_data = []
+        for idx, headline in enumerate(headlines[:10], start=1):  # Limit to top 10 headlines
+            news_data.append({"No": idx, "Headline": headline.text})
+        
+        # Save data to CSV
+        df = pd.DataFrame(news_data)
+        df.to_csv("news_headlines.csv", index=False)
+        
+        print("News headlines saved to 'news_headlines.csv'.")
+    else:
+        print(f"Failed to fetch the webpage. Status code: {response.status_code}")
+
+# Run the scraper
+scrape_news()
